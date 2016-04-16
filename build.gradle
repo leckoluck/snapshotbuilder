@@ -1,0 +1,54 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'scala'
+apply plugin: 'java-library-distribution'
+
+idea {
+  project {
+    //if you want to set specific jdk and language level
+    jdkName = '1.8'
+    languageLevel = '1.8'
+  }
+}
+
+task testJar(type: Jar) {
+    classifier = 'tests'
+    from sourceSets.test.output
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.6'
+}
+
+jar.doFirst {
+        sourceSets.main.output.resourcesDir = "/dev/null2"
+}
+jar.doLast {
+        sourceSets.main.output.resourcesDir = sourceSets.main.output.classesDir
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    scala           = 'org.scala-lang:scala-library:2.11.4'
+    scalaTools = 'org.scala-lang:scala-compiler:2.11.4'
+    scalaTest       = 'org.scalatest:scalatest_2.11:2.2.2'
+    akkaActor    =  'com.typesafe.akka:akka-actor_2.11:2.3.7'
+    htmlunit = 'net.sourceforge.htmlunit:htmlunit:2.21'
+}
+
+
+
+dependencies {
+    compile scala
+	compile akkaActor
+    compile htmlunit
+}
+
+distributions {
+    main{
+        baseName = 'snapshot'
+    }
+}
